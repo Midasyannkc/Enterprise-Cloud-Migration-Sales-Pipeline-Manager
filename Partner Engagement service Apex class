@@ -1,0 +1,97 @@
+/**
+
+- @description Service class for managing partner engagements and notifications
+- @author Your Name
+- @date 2025
+  */
+  public with sharing class PartnerEngagementService {
+  
+  /**
+  - @description Notifies relevant partners when new opportunities are created
+  - @param opportunityIds List of opportunity IDs to process
+    */
+    @future(callout=true)
+    public static void notifyPartnersForOpportunities(List<Id> opportunityIds) {
+    try {
+    // Query opportunities with related account information
+    List<Opportunity> opportunities = [
+    SELECT Id, Name, AccountId, Account.Name, Account.Industry,
+    StageName, Amount, CloseDate, Type,
+    Migration_Complexity_Score__c, Technical_Solution_Type__c
+    FROM Opportunity
+    WHERE Id IN :opportunityIds
+    ];
+    
+    ```
+     // Query relevant partners based on opportunity criteria
+     for (Opportunity opp : opportunities) {
+         List<Partner_Relationship__c> relevantPartners = findRelevantPartners(opp);
+         
+         if (!relevantPartners.isEmpty()) {
+             createPartnerEngagements(opp, relevantPartners);
+             sendPartnerNotifications(opp, relevantPartners);
+         }
+     }
+    ```
+    
+    } catch (Exception e) {
+    System.debug(’Error in notifyPartnersForOpportunities: ’ + e.getMessage());
+    // Log error for monitoring
+    }
+    }
+  
+  /**
+  - @description Find partners relevant to the opportunity based on industry, solution type, and geography
+  - @param opp Opportunity record
+  - @return List of relevant partner relationships
+    */
+    private static List<Partner_Relationship__c> findRelevantPartners(Opportunity opp) {
+    String industry = opp.Account.Industry;
+    Decimal complexityScore = opp.Migration_Complexity_Score__c != null ? opp.Migration_Complexity_Score__c : 0;
+    
+    return [
+    SELECT Id, Partner_Account__c, Partner_Account__r.Name,
+    Partner_Type__c, Specialization__c, Performance_Rating__c,
+    Primary_Contact_Email__c, Engagement_Preference__c
+    FROM Partner_Relationship__c
+    WHERE Status__c = ‘Active’
+    AND (Specialization__c INCLUDES :industry OR Specialization__c INCLUDES ‘All Industries’)
+    AND Minimum_Deal_Size__c <= :opp.Amount
+    AND (complexityScore >= Minimum_Complexity_Score__c OR Minimum_Complexity_Score__c = null)
+    ORDER BY Performance_Rating__c DESC
+    LIMIT 5
+    ];
+    }
+  
+  /**
+  - @description Create partner engagement records for tracking
+  - @param opp Opportunity record
+  - @param partners List of partner relationships
+    */
+    private static void createPartnerEngagements(Opportunity opp, List<Partner_Relationship__c> partners) {
+    List<Partner_Engagement__c> engagements = new List<Partner_Engagement__c>();
+    
+    for (Partner_Relationship__c partner : partners) {
+    Partner_Engagement__c engagement = new Partner_Engagement__c(
+    Opportunity__c = opp.Id,
+    Partner_Relationship__c = partner.Id,
+    Engagement_Type__c = ‘Opportunity Notification’,
+    Status__c = ‘Notified’,
+    Engagement_Date__c = Date.today(),
+    Notes__c = ’Automatically notified of new opportunity: ’ + opp.Name
+    );
+    engagements.add(engagement);
+    }
+    
+    if (!engagements.isEmpty()) {
+    insert engagements;
+    }
+    }
+  
+  /**
+  - @description Send email notifications to partners
+  - @param opp Opportunity record
+  - @param partners List of partner relationships
+    */
+    private static void sendPartnerNotifications(Opportunity opp, List<Partner_Relationship__c> partners) {
+    List
