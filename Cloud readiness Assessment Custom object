@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>true</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <label>Cloud Readiness Assessment</label>
+    <nameField>
+        <displayFormat>CRA-{0000}</displayFormat>
+        <label>Assessment Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Cloud Readiness Assessments</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+
+```
+<fields>
+    <fullName>Account__c</fullName>
+    <externalId>false</externalId>
+    <label>Account</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Cloud Readiness Assessments</relationshipLabel>
+    <relationshipName>Cloud_Readiness_Assessments</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</fields>
+
+<fields>
+    <fullName>Current_Infrastructure_Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Current Infrastructure Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>On-Premises Data Center</fullName>
+                <default>false</default>
+                <label>On-Premises Data Center</label>
+            </value>
+            <value>
+                <fullName>Hybrid Cloud</fullName>
+                <default>false</default>
+                <label>Hybrid Cloud</label>
+            </value>
+            <value>
+                <fullName>Multi-Cloud</fullName>
+                <default>false</default>
+                <label>Multi-Cloud</label>
+            </value>
+            <value>
+                <fullName>Legacy Mainframe</fullName>
+                <default>false</default>
+                <label>Legacy Mainframe</label>
+            </value>
+            <value>
+                <fullName>Colocation</fullName>
+                <default>false</default>
+                <label>Colocation</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</fields>
+
+<fields>
+    <fullName>Migration_Complexity_Score__c</fullName>
+    <externalId>false</externalId>
+    <formula>
+        CASE(
+            TEXT(Current_Infrastructure_Type__c),
+            "Legacy Mainframe", 100,
+            "On-Premises Data Center", 80,
+            "Hybrid Cloud", 60,
+            "Multi-Cloud", 40,
+            "Colocation", 70,
+            50
+        ) +
+        CASE(
+            TEXT(Security_Compliance_Requirements__c),
+            "HIPAA", 20,
+            "SOX", 15,
+            "PCI-DSS", 15,
+            "GDPR", 10,
+            "FedRAMP", 25,
+            0
+        ) +
+        (Number_of_Applications__c * 2)
+    </formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Migration Complexity Score</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</fields>
+
+<fields>
+    <fullName>Number_of_Applications__c</fullName>
+    <externalId>false</externalId>
+    <label>Number of Applications</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</fields>
+
+<fields>
+    <fullName>Security_Compliance_Requirements__c</fullName>
+    <externalId>false</externalId>
+    <label>Security Compliance Requirements</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>HIPAA</fullName>
+                <default>false</default>
+                <label>HIPAA</label>
+            </value>
+            <value>
+                <fullName>SOX</fullName>
+                <default>false</default>
+                <label>SOX</label>
+            </value>
+            <value>
+                <fullName>PCI-DSS</fullName>
+                <default>false</default>
+                <label>PCI-DSS</label>
+            </value>
+            <value>
+                <fullName>GDPR</fullName>
+                <default>false</default>
+                <label>GDPR</label>
+            </value>
+            <value>
+                <fullName>FedRAMP</fullName>
+                <default>false</default>
+                <label>FedRAMP</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</fields>
+
+<fields>
+    <fullName>Assessment_Status__c</fullName>
+    <externalId>false</externalId>
+    <label>Assessment Status</label>
+    <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Scheduled</fullName>
+                <default>true</default>
+                <label>Scheduled</label>
+            </value>
+            <value>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+                <label>In Progress</label>
+            </value>
+            <value>
+                <fullName>Completed</fullName>
+                <default>false</default>
+                <label>Completed</label>
+            </value>
+            <value>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+                <label>Cancelled</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</fields>
+
+<fields>
+    <fullName>Assessment_Date__c</fullName>
+    <externalId>false</externalId>
+    <label>Assessment Date</label>
+    <required>true</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</fields>
+
+<fields>
+    <fullName>Technical_Contact__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Technical Contact</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Cloud Readiness Assessments (Technical Contact)</relationshipLabel>
+    <relationshipName>Cloud_Readiness_Assessments_Tech</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</fields>
+
+<fields>
+    <fullName>Business_Contact__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Business Contact</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Cloud Readiness Assessments (Business Contact)</relationshipLabel>
+    <relationshipName>Cloud_Readiness_Assessments_Business</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</fields>
+
+<fields>
+    <fullName>Recommended_AWS_Services__c</fullName>
+    <externalId>false</externalId>
+    <label>Recommended AWS Services</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</fields>
+```
+
+</CustomObject>
